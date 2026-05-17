@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
+    android:id="@+id/main_layout" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/three_lane_road">
 
@@ -15,15 +14,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/car_margin" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-    android:id="@+id/main_IMG_lemon_middle"
-    android:layout_width="@dimen/car_size"
-    android:layout_height="@dimen/car_size"
-    app:srcCompat="@drawable/pixel_lemon"
-    android:layout_centerHorizontal="true"
-    android:layout_alignParentTop="true"
-    android:layout_marginTop="50dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_FAB_left"
@@ -62,20 +52,20 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/main_IMG_heart0"
+            android:id="@+id/main_img_heart0"
             android:layout_width="@dimen/heart_size"
             android:layout_height="@dimen/heart_size"
             app:srcCompat="@drawable/pixel_heart" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/main_IMG_heart1"
+            android:id="@+id/main_img_heart1"
             android:layout_width="@dimen/heart_size"
             android:layout_height="@dimen/heart_size"
             android:layout_marginHorizontal="@dimen/margin_size"
             app:srcCompat="@drawable/pixel_heart" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/main_IMG_heart2"
+            android:id="@+id/main_img_heart2"
             android:layout_width="@dimen/heart_size"
             android:layout_height="@dimen/heart_size"
             app:srcCompat="@drawable/pixel_heart" />
