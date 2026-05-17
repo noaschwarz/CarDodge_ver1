@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="heart_size">35dp</dimen>
+    <dimen name="margin_size">5dp</dimen>
+    <dimen name="car_size">100dp</dimen>
+    <dimen name="car_margin">10dp</dimen>
+    <dimen name="button_size">75dp</dimen>
+    <dimen name="arrow_size">100dp</dimen>
+</resources>
