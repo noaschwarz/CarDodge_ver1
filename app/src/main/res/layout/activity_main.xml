@@ -1,19 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout" android:layout_width="match_parent"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/three_lane_road">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/main_IMG_car"
-        android:layout_width="@dimen/car_size"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main_LL_hearts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/margin_size"
+        android:orientation="horizontal">
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_img_heart0" android:layout_width="@dimen/heart_size" android:layout_height="@dimen/heart_size" app:srcCompat="@drawable/pixel_heart" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_img_heart1" android:layout_width="@dimen/heart_size" android:layout_height="@dimen/heart_size" android:layout_marginHorizontal="@dimen/margin_size" app:srcCompat="@drawable/pixel_heart" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_img_heart2" android:layout_width="@dimen/heart_size" android:layout_height="@dimen/heart_size" app:srcCompat="@drawable/pixel_heart" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <LinearLayout
+        android:id="@+id/main_LL_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_LL_car_row"
+        android:layout_below="@id/main_LL_hearts"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R1_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R1_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R1_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R2_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R2_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R2_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R3_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R3_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R3_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/main_LL_car_row"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/car_size"
-        app:srcCompat="@drawable/pixel_car_green"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/car_margin" />
+        android:layout_marginBottom="@dimen/car_margin"
+        android:orientation="horizontal"
+        android:weightSum="3">
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_car_green" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="visible" app:srcCompat="@drawable/pixel_car_green" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_car_green" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_FAB_left"
@@ -22,12 +70,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/margin_size"
-        android:clickable="true"
-        android:focusable="true"
-        app:srcCompat="@drawable/pixel_left"
         app:fabCustomSize="@dimen/button_size"
-        app:maxImageSize="@dimen/arrow_size"
-        app:backgroundTint="@color/button_lime" />
+        app:srcCompat="@drawable/pixel_left"
+        app:backgroundTint="@color/button_lime"
+        app:maxImageSize="@dimen/arrow_size" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_FAB_right"
@@ -36,39 +82,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/margin_size"
-        android:clickable="true"
-        android:focusable="true"
-        app:srcCompat="@drawable/pixel_right"
         app:fabCustomSize="@dimen/button_size"
-        app:maxImageSize="@dimen/arrow_size"
-        app:backgroundTint="@color/button_lime" />
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/margin_size"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/main_img_heart0"
-            android:layout_width="@dimen/heart_size"
-            android:layout_height="@dimen/heart_size"
-            app:srcCompat="@drawable/pixel_heart" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/main_img_heart1"
-            android:layout_width="@dimen/heart_size"
-            android:layout_height="@dimen/heart_size"
-            android:layout_marginHorizontal="@dimen/margin_size"
-            app:srcCompat="@drawable/pixel_heart" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/main_img_heart2"
-            android:layout_width="@dimen/heart_size"
-            android:layout_height="@dimen/heart_size"
-            app:srcCompat="@drawable/pixel_heart" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:srcCompat="@drawable/pixel_right"
+        app:backgroundTint="@color/button_lime"
+        app:maxImageSize="@dimen/arrow_size" />
 
 </RelativeLayout>
