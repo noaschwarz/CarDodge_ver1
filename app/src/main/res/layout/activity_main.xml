@@ -3,8 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/three_lane_road">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/three_lane_road"
+        android:scaleType="centerCrop" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/main_LL_hearts"
@@ -28,25 +33,60 @@
         android:orientation="vertical"
         android:weightSum="4">
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R0_C0" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R0_C1" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R0_C2" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R1_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R1_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R1_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R1_C0" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R1_C1" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R1_C2" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R2_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R2_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R2_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R2_C0" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R2_C1" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R2_C2" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="3">
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R3_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R3_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
-            <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R3_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_lemon"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="3">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R3_C0" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R3_C1" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_lemon_R3_C2" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -58,9 +98,9 @@
         android:layout_marginBottom="@dimen/car_margin"
         android:orientation="horizontal"
         android:weightSum="3">
-        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_car_green" />
-        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="visible" app:srcCompat="@drawable/pixel_car_green" />
-        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_car_green" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C0" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_car_green" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C1" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="visible" app:srcCompat="@drawable/pixel_car_green" />
+        <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_car_C2" android:layout_width="@dimen/lemon_width" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" app:srcCompat="@drawable/pixel_car_green" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
