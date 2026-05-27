@@ -30,7 +30,7 @@ class GameManager(private val lifeCount: Int = 3) {
         }
         // generate new obstacle at top row at random
         obstacleMatrix[0] = BooleanArray(cols)
-        if (Random.nextInt(100) < 40) {
+        if (Random.nextInt(100) < 50) {
             val targetSpawnLane = Random.nextInt(cols)
             obstacleMatrix[0][targetSpawnLane] = true
         }

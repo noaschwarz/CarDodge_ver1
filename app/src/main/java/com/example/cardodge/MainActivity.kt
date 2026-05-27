@@ -15,6 +15,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
@@ -25,11 +27,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var lemonMatrixUI: Array<Array<AppCompatImageView>>
     private lateinit var carMatrixUI: Array<AppCompatImageView>
 
-    private val frameDelay: Long = 1000 // lemon speed
-    private val gameOverResetDelay: Long = 2000 // delay start after game over
+    private val frameDelay: Long = 800 // lemon speed
+    private val gameOverResetDelay: Long = 4000 // delay start after game over
     private lateinit var gameManager: GameManager
     private val gameHandler = Handler(Looper.getMainLooper())
     private lateinit var gameRunnable: Runnable
+    private var isResetting = false // check for reset
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,12 +73,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         main_btn_Left.setOnClickListener {
-            gameManager.moveCarLeft()
-            refreshRenderUI()
+            if (!isResetting) { // move if not resetting
+                gameManager.moveCarLeft()
+                refreshRenderUI()
+            }
         }
         main_btn_Right.setOnClickListener {
-            gameManager.moveCarRight()
-            refreshRenderUI()
+            if (!isResetting) { // move if not resetting
+                gameManager.moveCarRight()
+                refreshRenderUI()
+            }
         }
         refreshRenderUI()
     }
@@ -85,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         gameRunnable = object : Runnable {
             @RequiresPermission(Manifest.permission.VIBRATE)
             override fun run() {
+                if (isResetting) return
                 val hitOccurred = gameManager.shiftObstaclesDown() //shift lemons and check hits
 
                 if (hitOccurred) { // if hit let user know
@@ -129,22 +137,29 @@ class MainActivity : AppCompatActivity() {
 
     // hearts visibility
     private fun updateHeartsUI() {
-        val totalHits = gameManager.numberOfHits //check num of hits
+        val totalHits = gameManager.numberOfHits // check num of hits
         if (totalHits in 1..main_img_hearts.size) { // ensure the num of hearts we see is correct
-            main_img_hearts[main_img_hearts.size - totalHits].visibility = View.INVISIBLE
+            main_img_hearts[totalHits - 1].visibility = View.INVISIBLE
         }
     }
 
     // handle game over
     private fun handleGameOver() {
+        //check if restart is happening
+        isResetting = true
+        gameHandler.removeCallbacks(gameRunnable)
         Toast.makeText(this, "Game Over! don't cry over spilled lemonade...", Toast.LENGTH_LONG).show()
-        gameManager.reset() //reset all locations
+        gameManager.reset()
 
-        for (heart in main_img_hearts) { //reset hearts
+        for (heart in main_img_hearts) {
             heart.visibility = View.VISIBLE
         }
         refreshRenderUI()
-        gameHandler.postDelayed(gameRunnable, gameOverResetDelay)
+
+        gameHandler.postDelayed({
+            isResetting = false
+            gameHandler.postDelayed(gameRunnable, frameDelay)
+        }, gameOverResetDelay)
     }
 
     // vibration
@@ -162,7 +177,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        gameHandler.postDelayed(gameRunnable, frameDelay)
+        if (!isResetting) {
+            gameHandler.removeCallbacks(gameRunnable)
+            gameHandler.postDelayed(gameRunnable, frameDelay)
+        }
     }
 
     override fun onPause() {

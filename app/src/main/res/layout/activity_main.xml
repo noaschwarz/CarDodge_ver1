@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/margin_size"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_img_heart0" android:layout_width="@dimen/heart_size" android:layout_height="@dimen/heart_size" app:srcCompat="@drawable/pixel_heart" />
         <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_img_heart1" android:layout_width="@dimen/heart_size" android:layout_height="@dimen/heart_size" android:layout_marginHorizontal="@dimen/margin_size" app:srcCompat="@drawable/pixel_heart" />
