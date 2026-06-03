@@ -18,6 +18,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.annotation.SuppressLint
+import android.hardware.SensorEvent
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var main_img_hearts: Array<AppCompatImageView>
     private lateinit var lemonMatrixUI: Array<Array<AppCompatImageView>>
     private lateinit var carMatrixUI: Array<AppCompatImageView>
+    private lateinit var sensorManager: SensorManager
 
     private val frameDelay: Long = 800 // lemon speed
     private val gameOverResetDelay: Long = 4000 // delay start after game over
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val gameHandler = Handler(Looper.getMainLooper())
     private lateinit var gameRunnable: Runnable
     private var isResetting = false // check for reset
+    private var accelerometer: Sensor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,6 +177,28 @@ class MainActivity : AppCompatActivity() {
             val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(300)
         }
+    }
+
+    @SuppressLint("ServiceCast")
+    private fun initSensor() { //start our sensor for movement based functionality
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+    }
+
+    private val sensorEventListener = object : SensorEventListener { //listener for movement
+        override fun onSensorChanged(event: SensorEvent?) {
+            if (event == null) return
+            val x = event.values[0] // Lateral tilt
+
+            if (x < -2.0) { // Tilt Right
+                gameManager.moveCarRight()
+                refreshRenderUI()
+            } else if (x > 2.0) { // Tilt Left
+                gameManager.moveCarLeft()
+                refreshRenderUI()
+            }
+        }
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
     }
 
     override fun onResume() {

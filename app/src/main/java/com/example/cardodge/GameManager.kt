@@ -8,11 +8,12 @@ class GameManager(private val lifeCount: Int = 3) {
         private set
 
     // represent our matrix
-    val rows = 4
-    val cols = 3
-    val obstacleMatrix = Array(rows) { BooleanArray(cols) }
+    val rows = 10
+    val cols = 5
+    val obstacleMatrix = Array(rows) { IntArray(cols) }
 
-    var currentCarLane: Int = 1 // start game on middle lane (0=Left, 1=Middle, 2=Right)
+    var currentCarLane: Int = 2 // start game on middle lane (0=very Left, 1=Left, 2=Middle, 3=Right, 4=very Right)
+    var score: Int = 0          // distance
 
     val isGameOver: Boolean
         get() = numberOfHits >= lifeCount

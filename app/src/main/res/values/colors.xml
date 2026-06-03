@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="backgroud">#246eab</color>
-    <color name="button_lime">#B4F14D</color>
+    <color name="backgroud">#94D2BD</color>
+    <color name="button_color">#74cfb0</color>
+    <color name="dark_blue">#006073</color>
+    <color name="dark_light_blue">#0a9496</color>
 </resources>

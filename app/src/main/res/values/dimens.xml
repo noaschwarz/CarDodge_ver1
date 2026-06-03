@@ -8,4 +8,7 @@
     <dimen name="arrow_size">100dp</dimen>
     <dimen name="lemon_width">0dp</dimen>
     <dimen name="lemon_padding">20dp</dimen>
+    <dimen name="default_button_height">60dp</dimen>
+    <dimen name="default_top_margin">20dp</dimen>
+    <dimen name="counter_text_size">22sp</dimen>
 </resources>
