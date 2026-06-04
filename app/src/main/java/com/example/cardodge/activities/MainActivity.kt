@@ -1,7 +1,8 @@
-package com.example.cardodge
+package com.example.cardodge.activities
 
 import android.Manifest
-import android.content.Context
+import android.annotation.SuppressLint
+import android.hardware.SensorEvent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,11 +16,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.cardodge.R
+import com.example.cardodge.managers.GameManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import android.annotation.SuppressLint
-import android.hardware.SensorEvent
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,23 +28,39 @@ class MainActivity : AppCompatActivity() {
     private lateinit var lemonMatrixUI: Array<Array<AppCompatImageView>>
     private lateinit var carMatrixUI: Array<AppCompatImageView>
     private lateinit var sensorManager: SensorManager
+    private lateinit var fusedLocationClient: com.google.android.gms.location.FusedLocationProviderClient
 
-    private val frameDelay: Long = 800 // lemon speed
+    private var frameDelay: Long = 1000L // items speed
     private val gameOverResetDelay: Long = 4000 // delay start after game over
+    private var useSensorMode: Boolean = false // buttons or movement based controls
     private lateinit var gameManager: GameManager
     private val gameHandler = Handler(Looper.getMainLooper())
     private lateinit var gameRunnable: Runnable
     private var isResetting = false // check for reset
     private var accelerometer: Sensor? = null
+    private var lastLatitude: Double = 35.3606  // defaul
+    private var lastLongitude: Double = 138.7274 // default
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        fusedLocationClient = com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(this)
+        useSensorMode = intent.getBooleanExtra("EXTRA_USE_SENSOR", false)
+        frameDelay = intent.getLongExtra("EXTRA_FRAME_DELAY", 1000L)
+        requestLocationPermissions()
 
         findViews()
         gameManager = GameManager(main_img_hearts.size)
         initViews()
+        if (useSensorMode) { // see what mode we are and set up whats needed
+            main_btn_Left.visibility = View.GONE
+            main_btn_Right.visibility = View.GONE
+            initSensor()
+        } else {
+            main_btn_Left.visibility = View.VISIBLE
+            main_btn_Right.visibility = View.VISIBLE
+        }
         setupGameLoop()
     }
 
@@ -61,10 +76,14 @@ class MainActivity : AppCompatActivity() {
 
         // map out the lemons in our matrix
         lemonMatrixUI = arrayOf(
-            arrayOf(findViewById(R.id.main_lemon_R0_C0), findViewById(R.id.main_lemon_R0_C1), findViewById(R.id.main_lemon_R0_C2)),
-            arrayOf(findViewById(R.id.main_lemon_R1_C0), findViewById(R.id.main_lemon_R1_C1), findViewById(R.id.main_lemon_R1_C2)),
-            arrayOf(findViewById(R.id.main_lemon_R2_C0), findViewById(R.id.main_lemon_R2_C1), findViewById(R.id.main_lemon_R2_C2)),
-            arrayOf(findViewById(R.id.main_lemon_R3_C0), findViewById(R.id.main_lemon_R3_C1), findViewById(R.id.main_lemon_R3_C2))
+            arrayOf(findViewById(R.id.main_lemon_R0_C0), findViewById(R.id.main_lemon_R0_C1), findViewById(
+                R.id.main_lemon_R0_C2)),
+            arrayOf(findViewById(R.id.main_lemon_R1_C0), findViewById(R.id.main_lemon_R1_C1), findViewById(
+                R.id.main_lemon_R1_C2)),
+            arrayOf(findViewById(R.id.main_lemon_R2_C0), findViewById(R.id.main_lemon_R2_C1), findViewById(
+                R.id.main_lemon_R2_C2)),
+            arrayOf(findViewById(R.id.main_lemon_R3_C0), findViewById(R.id.main_lemon_R3_C1), findViewById(
+                R.id.main_lemon_R3_C2))
         )
 
         // map out car locations
@@ -165,12 +184,56 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // handle game over
     private fun handleGameOver() {
         //check if restart is happening
         isResetting = true
         gameHandler.removeCallbacks(gameRunnable)
-        Toast.makeText(this, "Game Over! don't cry over spilled lemonade...", Toast.LENGTH_LONG).show()
+        if (androidx.core.app.ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    lastLatitude = location.latitude
+                    lastLongitude = location.longitude
+                }
+                showHighScoreInputDialog()
+            }.addOnFailureListener {
+                showHighScoreInputDialog() // default if failes
+            }
+        } else {
+            showHighScoreInputDialog() // default if no permission
+        }
+    }
+
+    private fun showHighScoreInputDialog() {
+        val builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Game Over!")
+
+        val totalScore = gameManager.distanceOdometer + gameManager.coinScore
+        builder.setMessage("Final Score: $totalScore m\nEnter your name:")
+
+        val input = android.widget.EditText(this)
+        builder.setView(input)
+
+        builder.setPositiveButton("Save") { _, _ ->
+            val name = input.text.toString().ifEmpty { "Player" }
+
+            val record = ScoreRecord(
+                playerName = name,
+                score = totalScore,
+                timestamp = System.currentTimeMillis(),
+                latitude = lastLatitude,
+                longitude = lastLongitude
+            )
+            HighScoreManager(this).addScore(record)
+            executeRestartSequence()
+        }
+        builder.setCancelable(false)
+        builder.show()
+    }
+
+    private fun executeRestartSequence() {
+        Toast.makeText(this, "don't cry over spilled lemonade...", Toast.LENGTH_LONG).show()
         gameManager.reset()
 
         for (heart in main_img_hearts) {
@@ -188,18 +251,18 @@ class MainActivity : AppCompatActivity() {
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun triggerVibration() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { //new ver so run in new way
-            val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
             @Suppress("DEPRECATION") //older ver so run old way
-            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(300)
         }
     }
 
     @SuppressLint("ServiceCast")
     private fun initSensor() { //start our sensor for movement based functionality
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
 
@@ -217,6 +280,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    }
+
+    private fun requestLocationPermissions() {
+        val permissions = arrayOf(
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        androidx.core.app.ActivityCompat.requestPermissions(this, permissions, 100)
     }
 
     override fun onResume() {

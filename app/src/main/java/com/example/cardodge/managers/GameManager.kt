@@ -1,4 +1,4 @@
-package com.example.cardodge
+package com.example.cardodge.managers
 
 import kotlin.random.Random
 
@@ -44,8 +44,8 @@ class GameManager(private val lifeCount: Int = 3) {
         for (c in 0 until cols) { //make sure first row is clear
             obstacleMatrix[0][c] = 0
         }
-        val spawnLane = Random.nextInt(cols) //get random line and drop rate
-        val spawnChance = Random.nextInt(100)
+        val spawnLane = Random.Default.nextInt(cols) //get random line and drop rate
+        val spawnChance = Random.Default.nextInt(100)
 
         when {
             spawnChance < 60 -> { // 60% for a leon

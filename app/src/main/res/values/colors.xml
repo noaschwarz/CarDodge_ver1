@@ -6,4 +6,5 @@
     <color name="button_color">#74cfb0</color>
     <color name="dark_blue">#006073</color>
     <color name="dark_light_blue">#0a9496</color>
+    <color name="gray">#AAAAAA</color>
 </resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:background="?android:attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/item_lbl_rank"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="#1"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="12dp">
+
+        <TextView
+            android:id="@+id/item_lbl_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Player Name"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/item_lbl_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="04/06/2026 13:15"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/item_lbl_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="02450 m"
+        android:textColor="@color/dark_light_blue"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
