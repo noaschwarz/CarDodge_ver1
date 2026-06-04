@@ -1,4 +1,4 @@
-package com.example.cardodge.activities
+package com.example.cardodge
 
 import android.content.Intent
 import android.os.Bundle

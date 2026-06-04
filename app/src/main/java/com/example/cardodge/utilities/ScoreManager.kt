@@ -1,4 +1,4 @@
-package com.example.cardodge.managers
+package com.example.cardodge.utilities
 
 import android.content.Context
 import com.google.gson.Gson

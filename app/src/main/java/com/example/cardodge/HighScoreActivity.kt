@@ -1,4 +1,4 @@
-package com.example.cardodge.activities
+package com.example.cardodge
 
 import android.os.Bundle
 import android.widget.Toast
@@ -9,8 +9,12 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.example.cardodge.utilities.ScoreListFragment
+import com.example.cardodge.R
 
-class HighScoreActivity : AppCompatActivity(), ScoreListFragment.OnScoreClickListener, OnMapReadyCallback{
+
+class HighScoreActivity : AppCompatActivity(), ScoreListFragment.OnScoreClickListener,
+    OnMapReadyCallback {
     private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

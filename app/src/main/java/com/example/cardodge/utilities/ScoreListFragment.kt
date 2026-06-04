@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.example.cardodge.R
 
-class ScoreListFrag : Fragment(){
+class ScoreListFragment : Fragment(){
     // Interface to notify the hosting activity of coordinate changes
     interface OnScoreClickListener {
         fun onScoreClicked(latitude: Double, longitude: Double)
@@ -34,7 +35,7 @@ class ScoreListFrag : Fragment(){
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Fetch high scores out of our database manager
-        val scoreManager = HighScoreManager(requireContext())
+        val scoreManager = ScoreManager(requireContext())
         val recordsList = scoreManager.getHighScores()
 
         // Bind adapter to interface callback
@@ -45,7 +46,6 @@ class ScoreListFrag : Fragment(){
         return view
     }
 
-    // --- INNER RECYCLERVIEW ADAPTER PATTERN ---
     private class ScoreAdapter(
         private val items: List<ScoreRecord>,
         private val onItemClick: (ScoreRecord) -> Unit

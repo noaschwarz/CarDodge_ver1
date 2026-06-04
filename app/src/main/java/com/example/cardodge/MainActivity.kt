@@ -1,7 +1,9 @@
-package com.example.cardodge.activities
+package com.example.cardodge
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.pm.PackageManager
 import android.hardware.SensorEvent
 import android.os.Build
 import android.os.Bundle
@@ -11,24 +13,34 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import com.example.cardodge.R
-import com.example.cardodge.managers.GameManager
+import androidx.core.app.ActivityCompat
+import com.example.cardodge.utilities.GameManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.hardware.SensorEventListener
+import android.widget.TextView
+import com.example.cardodge.utilities.ScoreManager
+import com.example.cardodge.utilities.ScoreRecord
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var main_btn_Left: FloatingActionButton
     private lateinit var main_btn_Right: FloatingActionButton
     private lateinit var main_img_hearts: Array<AppCompatImageView>
-    private lateinit var lemonMatrixUI: Array<Array<AppCompatImageView>>
+    private lateinit var itemMatrixUI: Array<Array<AppCompatImageView>>
     private lateinit var carMatrixUI: Array<AppCompatImageView>
     private lateinit var sensorManager: SensorManager
-    private lateinit var fusedLocationClient: com.google.android.gms.location.FusedLocationProviderClient
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var frameDelay: Long = 1000L // items speed
     private val gameOverResetDelay: Long = 4000 // delay start after game over
@@ -45,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        fusedLocationClient = com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         useSensorMode = intent.getBooleanExtra("EXTRA_USE_SENSOR", false)
         frameDelay = intent.getLongExtra("EXTRA_FRAME_DELAY", 1000L)
         requestLocationPermissions()
@@ -74,23 +86,23 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.main_img_heart2)
         )
 
-        // map out the lemons in our matrix
-        lemonMatrixUI = arrayOf(
-            arrayOf(findViewById(R.id.main_lemon_R0_C0), findViewById(R.id.main_lemon_R0_C1), findViewById(
-                R.id.main_lemon_R0_C2)),
-            arrayOf(findViewById(R.id.main_lemon_R1_C0), findViewById(R.id.main_lemon_R1_C1), findViewById(
-                R.id.main_lemon_R1_C2)),
-            arrayOf(findViewById(R.id.main_lemon_R2_C0), findViewById(R.id.main_lemon_R2_C1), findViewById(
-                R.id.main_lemon_R2_C2)),
-            arrayOf(findViewById(R.id.main_lemon_R3_C0), findViewById(R.id.main_lemon_R3_C1), findViewById(
-                R.id.main_lemon_R3_C2))
+        // map out all items in our matrix
+        itemMatrixUI = arrayOf(
+            arrayOf(findViewById(R.id.main_lemon_R0_C0), findViewById(R.id.main_lemon_R0_C1), findViewById(R.id.main_lemon_R0_C2), findViewById(R.id.main_lemon_R0_C3), findViewById(R.id.main_lemon_R0_C4)),
+            arrayOf(findViewById(R.id.main_lemon_R1_C0), findViewById(R.id.main_lemon_R1_C1), findViewById(R.id.main_lemon_R1_C2), findViewById(R.id.main_lemon_R1_C3), findViewById(R.id.main_lemon_R1_C4)),
+            arrayOf(findViewById(R.id.main_lemon_R2_C0), findViewById(R.id.main_lemon_R2_C1), findViewById(R.id.main_lemon_R2_C2), findViewById(R.id.main_lemon_R2_C3), findViewById(R.id.main_lemon_R2_C4)),
+            arrayOf(findViewById(R.id.main_lemon_R3_C0), findViewById(R.id.main_lemon_R3_C1), findViewById(R.id.main_lemon_R3_C2), findViewById(R.id.main_lemon_R3_C3), findViewById(R.id.main_lemon_R3_C4)),
+            arrayOf(findViewById(R.id.main_lemon_R4_C0), findViewById(R.id.main_lemon_R4_C1), findViewById(R.id.main_lemon_R4_C2), findViewById(R.id.main_lemon_R4_C3), findViewById(R.id.main_lemon_R4_C4)),
+            arrayOf(findViewById(R.id.main_lemon_R5_C0), findViewById(R.id.main_lemon_R5_C1), findViewById(R.id.main_lemon_R5_C2), findViewById(R.id.main_lemon_R5_C3), findViewById(R.id.main_lemon_R5_C4))
         )
 
         // map out car locations
         carMatrixUI = arrayOf(
             findViewById(R.id.main_car_C0),
             findViewById(R.id.main_car_C1),
-            findViewById(R.id.main_car_C2)
+            findViewById(R.id.main_car_C2),
+            findViewById(R.id.main_car_C3),
+            findViewById(R.id.main_car_C4)
         )
     }
 
@@ -116,12 +128,12 @@ class MainActivity : AppCompatActivity() {
             @RequiresPermission(Manifest.permission.VIBRATE)
             override fun run() {
                 if (isResetting) return
-                val hitOccurred = gameManager.shiftObstaclesDown() //shift lemons and check hits
+                val hitResult = gameManager.shiftObstaclesDown() //shift lemons and check hits
 
                 if (hitResult == 1) { // if we are hit by lemon, handle (life loss, vibration, toast)
                     handleCrashImpact()
                 } else if (hitResult == 2) { // if catch a coin, handle (points, noise)
-                    Toast.makeText(this, "+5 Coin Collected!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "+5 Coin Collected!", Toast.LENGTH_SHORT).show()
                 }
 
                 refreshRenderUI()
@@ -154,15 +166,15 @@ class MainActivity : AppCompatActivity() {
 
                 when (itemType) { //check what our item type based on the generateNewRowItems drop rate
                     1 -> { //lemon
-                        lemonMatrixUI[r][c].visibility = View.VISIBLE
-                        lemonMatrixUI[r][c].setImageResource(R.drawable.pixel_lemon)
+                        itemMatrixUI[r][c].visibility = View.VISIBLE
+                        itemMatrixUI[r][c].setImageResource(R.drawable.pixel_lemon)
                     }
                     2 -> { //coin
-                        lemonMatrixUI[r][c].visibility = View.VISIBLE
-                        lemonMatrixUI[r][c].setImageResource(R.drawable.pixel_coin)
+                        itemMatrixUI[r][c].visibility = View.VISIBLE
+                        itemMatrixUI[r][c].setImageResource(R.drawable.pixel_coin)
                     }
                     else -> {
-                        lemonMatrixUI[r][c].visibility = View.INVISIBLE
+                        itemMatrixUI[r][c].visibility = View.INVISIBLE
                     }
                 }
             }
@@ -188,8 +200,8 @@ class MainActivity : AppCompatActivity() {
         //check if restart is happening
         isResetting = true
         gameHandler.removeCallbacks(gameRunnable)
-        if (androidx.core.app.ActivityCompat.checkSelfPermission(
-                this, android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
@@ -206,13 +218,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showHighScoreInputDialog() {
-        val builder = android.app.AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle("Game Over!")
 
         val totalScore = gameManager.distanceOdometer + gameManager.coinScore
         builder.setMessage("Final Score: $totalScore m\nEnter your name:")
 
-        val input = android.widget.EditText(this)
+        val input = EditText(this)
         builder.setView(input)
 
         builder.setPositiveButton("Save") { _, _ ->
@@ -225,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                 latitude = lastLatitude,
                 longitude = lastLongitude
             )
-            HighScoreManager(this).addScore(record)
+            ScoreManager(this).addScore(record)
             executeRestartSequence()
         }
         builder.setCancelable(false)
@@ -251,7 +263,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun triggerVibration() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { //new ver so run in new way
-            val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
             @Suppress("DEPRECATION") //older ver so run old way
@@ -261,9 +273,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ServiceCast")
-    private fun initSensor() { //start our sensor for movement based functionality
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+    private fun initSensor() {
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_GAME)
     }
 
     private val sensorEventListener = object : SensorEventListener { //listener for movement
@@ -284,15 +297,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestLocationPermissions() {
         val permissions = arrayOf(
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
-        androidx.core.app.ActivityCompat.requestPermissions(this, permissions, 100)
+        ActivityCompat.requestPermissions(this, permissions, 100)
     }
 
     override fun onResume() {
         super.onResume()
-        if (!isResetting) {
+        if (useSensorMode && accelerometer != null) {
+            sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_GAME)
+        }
+        if (!isResetting && ::gameRunnable.isInitialized) {
             gameHandler.removeCallbacks(gameRunnable)
             gameHandler.postDelayed(gameRunnable, frameDelay)
         }
@@ -300,6 +316,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        if (useSensorMode) {
+            sensorManager.unregisterListener(sensorEventListener)
+        }
         gameHandler.removeCallbacks(gameRunnable)
     }
 }

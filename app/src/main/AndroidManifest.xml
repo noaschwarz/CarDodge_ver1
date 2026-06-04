@@ -16,15 +16,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarDodge">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBYZOsYohRC1Me6mE75XXiM6H_b7adIav8" />
+
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".MenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".HighScoreActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
