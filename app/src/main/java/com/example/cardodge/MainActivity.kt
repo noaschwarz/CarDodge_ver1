@@ -99,8 +99,10 @@ class MainActivity : AppCompatActivity() {
                 if (isResetting) return
                 val hitOccurred = gameManager.shiftObstaclesDown() //shift lemons and check hits
 
-                if (hitOccurred) { // if hit let user know
+                if (hitResult == 1) { // if we are hit by lemon, handle (life loss, vibration, toast)
                     handleCrashImpact()
+                } else if (hitResult == 2) { // if catch a coin, handle (points, noise)
+                    Toast.makeText(this, "+5 Coin Collected!", Toast.LENGTH_SHORT).show()
                 }
 
                 refreshRenderUI()
@@ -126,13 +128,29 @@ class MainActivity : AppCompatActivity() {
 
     //refresh the view after every change
     private fun refreshRenderUI() {
-        // sync lemon matrix visibility
+        // sync itmes matrix visibility
         for (r in 0 until gameManager.rows) { //for all rows and cols
             for (c in 0 until gameManager.cols) {
-                val isActive = gameManager.obstacleMatrix[r][c] //check if you SHOULD see that lemon
-                lemonMatrixUI[r][c].visibility = if (isActive) View.VISIBLE else View.INVISIBLE // if yeah, make it show
+                val itemType = gameManager.obstacleMatrix[r][c] //check if you SHOULD see that item
+
+                when (itemType) { //check what our item type based on the generateNewRowItems drop rate
+                    1 -> { //lemon
+                        lemonMatrixUI[r][c].visibility = View.VISIBLE
+                        lemonMatrixUI[r][c].setImageResource(R.drawable.pixel_lemon)
+                    }
+                    2 -> { //coin
+                        lemonMatrixUI[r][c].visibility = View.VISIBLE
+                        lemonMatrixUI[r][c].setImageResource(R.drawable.pixel_coin)
+                    }
+                    else -> {
+                        lemonMatrixUI[r][c].visibility = View.INVISIBLE
+                    }
+                }
             }
         }
+        // odometer String metrics
+        val totalScoreDisplay = gameManager.distanceOdometer + gameManager.coinScore
+        findViewById<TextView>(R.id.main_lbl_odometer).text = String.format("%05d m", totalScoreDisplay)
         // sync car lane
         for (c in 0 until gameManager.cols) { //go over all the lanes and see where we are
             carMatrixUI[c].visibility = if (c == gameManager.currentCarLane) View.VISIBLE else View.INVISIBLE
