@@ -52,7 +52,9 @@
         android:layout_above="@id/main_LL_car_row"
         android:layout_below="@id/main_RL_dashboard"
         android:orientation="vertical"
-        android:weightSum="6"> <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="5">
+        android:weightSum="6">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:weightSum="5">
+
         <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C0" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
         <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
         <androidx.appcompat.widget.AppCompatImageView android:id="@+id/main_lemon_R0_C2" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:visibility="invisible" android:layout_gravity="center" android:padding="@dimen/lemon_padding" app:srcCompat="@drawable/pixel_lemon"/>
