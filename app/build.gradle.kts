@@ -1,5 +1,19 @@
 import java.util.Properties
 import java.io.FileInputStream
+import java.io.File
+
+val localProperties = Properties()
+val rootPropertiesFile = File(rootDir, "local.properties")
+val modulePropertiesFile = File(projectDir, "local.properties")
+
+if (rootPropertiesFile.exists()) {
+    rootPropertiesFile.inputStream().use { localProperties.load(it) }
+} else if (modulePropertiesFile.exists()) {
+    modulePropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: "AIzaSy_Placeholder_Key_Since_File_Not_Found"
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,20 +21,17 @@ plugins {
 
 android {
     namespace = "com.example.cardodge"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.cardodge"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
         buildConfigField("String", "MAPS_KEY", "\"$mapsApiKey\"")
     }
@@ -43,14 +54,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(FileInputStream(localPropertiesFile))
-}
-
-val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
 dependencies {
     implementation(libs.androidx.core.ktx)
