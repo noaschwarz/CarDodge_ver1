@@ -28,6 +28,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.SensorEventListener
+import android.widget.Button
 import android.widget.TextView
 import com.example.cardodge.utilities.ScoreManager
 import com.example.cardodge.utilities.ScoreRecord
@@ -41,6 +42,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var carMatrixUI: Array<AppCompatImageView>
     private lateinit var sensorManager: SensorManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var mainLayoutGameOver: View
+    private lateinit var endLblDistance: TextView
+    private lateinit var endLblCoins: TextView
+    private lateinit var endBtnPlayAgain: Button
+    private lateinit var endBtnOpenMenu: Button
 
     private var frameDelay: Long = 1000L // items speed
     private val gameOverResetDelay: Long = 4000 // delay start after game over
@@ -104,6 +110,12 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.main_car_C3),
             findViewById(R.id.main_car_C4)
         )
+
+        mainLayoutGameOver = findViewById(R.id.main_layout_game_over)
+        endLblDistance = findViewById(R.id.end_lbl_distance)
+        endLblCoins = findViewById(R.id.end_lbl_coins)
+        endBtnPlayAgain = findViewById<Button>(R.id.end_btn_play_again)
+        endBtnOpenMenu = findViewById<Button>(R.id.end_btn_open_menu)
     }
 
     private fun initViews() {
@@ -197,12 +209,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleGameOver() {
-        //check if restart is happening
         isResetting = true
         gameHandler.removeCallbacks(gameRunnable)
+        gameHandler.removeCallbacksAndMessages(null)
+
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                     lastLatitude = location.latitude
@@ -210,10 +222,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 showHighScoreInputDialog()
             }.addOnFailureListener {
-                showHighScoreInputDialog() // default if failes
+                showHighScoreInputDialog()
             }
         } else {
-            showHighScoreInputDialog() // default if no permission
+            showHighScoreInputDialog()
         }
     }
 
@@ -238,15 +250,35 @@ class MainActivity : AppCompatActivity() {
                 longitude = lastLongitude
             )
             ScoreManager(this).addScore(record)
-            executeRestartSequence()
+            showEndGameScreenLayout()
         }
         builder.setCancelable(false)
         builder.show()
     }
 
+    private fun showEndGameScreenLayout() {
+        endLblDistance.text = "Distance Traveled: ${gameManager.distanceOdometer} m"
+        endLblCoins.text = "Coins Collected: ${gameManager.coinScore}"
+
+        mainLayoutGameOver.visibility = View.VISIBLE
+        main_btn_Left.visibility = View.GONE
+        main_btn_Right.visibility = View.GONE
+
+        endBtnPlayAgain.setOnClickListener {
+            mainLayoutGameOver.visibility = View.GONE
+            executeRestartSequence()
+        }
+
+        endBtnOpenMenu.setOnClickListener {
+            finish()
+        }
+    }
+
     private fun executeRestartSequence() {
-        Toast.makeText(this, "don't cry over spilled lemonade...", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "restating, so don't cry over spilled lemonade", Toast.LENGTH_LONG).show()
         gameManager.reset()
+        main_btn_Left.visibility = View.VISIBLE
+        main_btn_Right.visibility = View.VISIBLE
 
         for (heart in main_img_hearts) {
             heart.visibility = View.VISIBLE
