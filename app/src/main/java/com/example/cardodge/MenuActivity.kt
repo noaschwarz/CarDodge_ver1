@@ -21,7 +21,7 @@ class MenuActivity : AppCompatActivity() {
         val btnSlow = findViewById<Button>(R.id.menu_btn_buttons_slow)
         val btnFast = findViewById<Button>(R.id.menu_btn_buttons_fast)
         val btnHighScores = findViewById<Button>(R.id.menu_btn_high_scores)
-        val colorSelected = ContextCompat.getColorStateList(this, R.color.gray)
+        val colorSelected = ContextCompat.getColorStateList(this, R.color.light_blue)
         val colorUnselected = ContextCompat.getColorStateList(this, R.color.dark_light_blue)
         btnControlMode.text = "Current Control Mode: Buttons" //default
         btnSlow.backgroundTintList = colorUnselected //default

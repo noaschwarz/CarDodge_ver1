@@ -1,48 +1,65 @@
 package com.example.cardodge
 
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.cardodge.utilities.ScoreListFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.cardodge.utilities.ScoreListFragment
-import com.example.cardodge.R
+import android.widget.Button
 
+class HighScoreActivity : AppCompatActivity(), ScoreListFragment.OnScoreClickListener, OnMapReadyCallback {
 
-class HighScoreActivity : AppCompatActivity(), ScoreListFragment.OnScoreClickListener,
-    OnMapReadyCallback {
     private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST) { renderer ->
+            when (renderer) {
+                MapsInitializer.Renderer.LATEST -> Log.d("MapsInit", "The latest renderer is loaded successfully.")
+                MapsInitializer.Renderer.LEGACY -> Log.d("MapsInit", "The legacy renderer is loaded.")
+            }
+        }
+
         setContentView(R.layout.activity_high_score)
+        val btnBack = findViewById<Button>(R.id.high_score_BTN_back)
+        btnBack.setOnClickListener {
+            finish()
+        }
 
         val listFragment = supportFragmentManager.findFragmentById(R.id.high_score_FRAME_list) as? ScoreListFragment
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.high_score_FRAME_map) as? SupportMapFragment
-
         listFragment?.setOnScoreClickListener(this)
+
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.high_score_FRAME_map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(map: GoogleMap) {
         this.googleMap = map
-        val defaultLocale = LatLng(35.3606, 138.7274) //defalt map to mt fuji
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocale, 8f))
+
+        val defaultLocation = LatLng(35.3606, 138.7274) //fuji
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 2.0f))
     }
 
     override fun onScoreClicked(latitude: Double, longitude: Double) {
-        if (googleMap != null) {
-            val position = LatLng(latitude, longitude)
+        val targetLocation = LatLng(latitude, longitude)
 
-            googleMap?.clear() // clear old
-            googleMap?.addMarker(MarkerOptions().position(position).title("Game Record Location"))
-            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15f)) // Focus zoom
-        } else {
-            Toast.makeText(this, "Map interface is still loading...", Toast.LENGTH_SHORT).show()
+        googleMap?.let { map ->
+            map.clear()
+            // marker exactly where the high score was set
+            map.addMarker(
+                MarkerOptions()
+                    .position(targetLocation)
+                    .title("Game Record Location")
+            )
+
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 14.0f))
         }
     }
 }

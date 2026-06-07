@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var endLblCoins: TextView
     private lateinit var endBtnPlayAgain: Button
     private lateinit var endBtnOpenMenu: Button
+    private lateinit var mainLblOdometer: TextView
 
     private var frameDelay: Long = 1000L // items speed
     private val gameOverResetDelay: Long = 4000 // delay start after game over
@@ -87,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             main_btn_Right.visibility = View.VISIBLE
         }
         setupGameLoop()
+        gameHandler.postDelayed(gameRunnable, frameDelay)
     }
 
     private fun findViews() {
@@ -123,6 +125,7 @@ class MainActivity : AppCompatActivity() {
         endLblCoins = findViewById(R.id.end_lbl_coins)
         endBtnPlayAgain = findViewById<Button>(R.id.end_btn_play_again)
         endBtnOpenMenu = findViewById<Button>(R.id.end_btn_open_menu)
+        mainLblOdometer = findViewById(R.id.main_lbl_odometer)
     }
 
     private fun initViews() {
@@ -209,8 +212,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         // odometer String metrics
+        // odometer String metrics
         val totalScoreDisplay = gameManager.distanceOdometer + gameManager.coinScore
-        findViewById<TextView>(R.id.main_lbl_odometer).text = String.format("%05d m", totalScoreDisplay)
+        mainLblOdometer.text = String.format("%05d m", totalScoreDisplay)
         // sync car lane
         for (c in 0 until gameManager.cols) { //go over all the lanes and see where we are
             carMatrixUI[c].visibility = if (c == gameManager.currentCarLane) View.VISIBLE else View.INVISIBLE
@@ -296,12 +300,10 @@ class MainActivity : AppCompatActivity() {
         gameManager.reset()
         main_btn_Left.visibility = View.VISIBLE
         main_btn_Right.visibility = View.VISIBLE
-
         for (heart in main_img_hearts) {
             heart.visibility = View.VISIBLE
         }
         refreshRenderUI()
-
         gameHandler.postDelayed({
             isResetting = false
             gameHandler.postDelayed(gameRunnable, frameDelay)
