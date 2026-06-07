@@ -14,29 +14,38 @@
         android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:layout_marginBottom="48dp"/>
+        android:layout_marginBottom="40dp"/>
 
     <Button
         android:id="@+id/menu_btn_high_scores"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_button_height"
         android:text="High Scores Table"
-        android:backgroundTint="@color/dark_blue"
-        android:layout_marginBottom="32dp"/>
+        android:backgroundTint="@color/dark_light_blue"
+        android:layout_marginBottom="20dp"/>
 
     <Button
-        android:id="@+id/menu_btn_sensor"
+        android:id="@+id/menu_btn_control_mode"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_button_height"
         android:text="Sensor Mode (Tilt)"
         android:backgroundTint="@color/dark_light_blue"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select game speed"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:layout_marginBottom="40dp">
 
         <Button
             android:id="@+id/menu_btn_buttons_slow"
@@ -56,6 +65,14 @@
             android:backgroundTint="@color/dark_light_blue"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/menu_btn_start_game"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_button_height"
+        android:text="Start Game"
+        android:backgroundTint="@color/dark_blue"
+        android:layout_marginBottom="20dp"/>
 
 
 </LinearLayout>

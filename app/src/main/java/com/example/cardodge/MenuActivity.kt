@@ -4,24 +4,55 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.cardodge.R
+import android.content.res.ColorStateList
+import androidx.core.content.ContextCompat
 
 class MenuActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) { //create our menu
+    private var useSensorMode = false
+    private var selectedDelay = 1000L
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
 
-        findViewById<Button>(R.id.menu_btn_buttons_slow).setOnClickListener {
-            startGame(useSensor = false, delay = 1000L)
+        val btnControlMode = findViewById<Button>(R.id.menu_btn_control_mode)
+        val btnStartGame = findViewById<Button>(R.id.menu_btn_start_game)
+        val btnSlow = findViewById<Button>(R.id.menu_btn_buttons_slow)
+        val btnFast = findViewById<Button>(R.id.menu_btn_buttons_fast)
+        val btnHighScores = findViewById<Button>(R.id.menu_btn_high_scores)
+        val colorSelected = ContextCompat.getColorStateList(this, R.color.dark_blue)
+        val colorUnselected = ContextCompat.getColorStateList(this, R.color.dark_light_blue)
+        btnControlMode.text = "Current Control Mode: Buttons" //default
+        btnSlow.backgroundTintList = colorUnselected //default
+        btnFast.backgroundTintList = colorSelected //default
+
+        btnControlMode.setOnClickListener {
+            useSensorMode = !useSensorMode //flip mode and text
+            if (useSensorMode) {
+                btnControlMode.text = "Current Control Mode: Tilt (Sensor)"
+            } else {
+                btnControlMode.text = "Current Control Mode: Buttons"
+            }
         }
-        findViewById<Button>(R.id.menu_btn_buttons_fast).setOnClickListener {
-            startGame(useSensor = false, delay = 500L)
+
+        //change speed based on need
+        btnFast.setOnClickListener {
+            selectedDelay = 1000L
+            btnSlow.backgroundTintList = colorUnselected
+            btnFast.backgroundTintList = colorSelected
         }
-        findViewById<Button>(R.id.menu_btn_sensor).setOnClickListener {
-            startGame(useSensor = true, delay = 600L)
+        btnSlow.setOnClickListener {
+            selectedDelay = 500L
+            btnSlow.backgroundTintList = colorSelected
+            btnFast.backgroundTintList = colorUnselected
         }
-        findViewById<Button>(R.id.menu_btn_high_scores).setOnClickListener {
+
+        btnStartGame.setOnClickListener {
+            startGame(useSensor = useSensorMode, delay = selectedDelay)
+        }
+
+        btnHighScores.setOnClickListener {
             val intent = Intent(this, HighScoreActivity::class.java)
             startActivity(intent)
         }
