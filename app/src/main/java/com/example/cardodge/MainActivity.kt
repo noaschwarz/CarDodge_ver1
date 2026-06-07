@@ -28,6 +28,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.SensorEventListener
+import android.media.SoundPool
 import android.widget.Button
 import android.widget.TextView
 import com.example.cardodge.utilities.ScoreManager
@@ -58,11 +59,17 @@ class MainActivity : AppCompatActivity() {
     private var accelerometer: Sensor? = null
     private var lastLatitude: Double = 35.3606  // defaul
     private var lastLongitude: Double = 138.7274 // default
+    private lateinit var soundPool: SoundPool
+    private var lemonSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(3)
+            .build()
+        lemonSoundId = soundPool.load(this, R.raw.meep_meep, 1)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         useSensorMode = intent.getBooleanExtra("EXTRA_USE_SENSOR", false)
         frameDelay = intent.getLongExtra("EXTRA_FRAME_DELAY", 1000L)
@@ -161,11 +168,21 @@ class MainActivity : AppCompatActivity() {
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun handleCrashImpact() {
         Toast.makeText(this, "Sour! you crashed", Toast.LENGTH_SHORT).show()
+        if (lemonSoundId != 0) {
+            soundPool.play(lemonSoundId, 1.0f, 1.0f, 1, 0, 1.0f)
+        }
         triggerVibration()
         gameManager.clearCurrentCollisionObstacle()
         updateHeartsUI()
         if (gameManager.isGameOver) { // if hits == lives -> game over
             handleGameOver()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::soundPool.isInitialized) {
+            soundPool.release()
         }
     }
 
