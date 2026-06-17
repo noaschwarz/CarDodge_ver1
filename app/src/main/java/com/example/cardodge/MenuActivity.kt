@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 class MenuActivity : AppCompatActivity() {
 
     private var useSensorMode = false
-    private var selectedDelay = 1000L
+    private var selectedDelay = 500L //default is fast
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +38,12 @@ class MenuActivity : AppCompatActivity() {
 
         //change speed based on need
         btnFast.setOnClickListener {
-            selectedDelay = 1000L
+            selectedDelay = 500L
             btnSlow.backgroundTintList = colorUnselected
             btnFast.backgroundTintList = colorSelected
         }
         btnSlow.setOnClickListener {
-            selectedDelay = 500L
+            selectedDelay = 1000L
             btnSlow.backgroundTintList = colorSelected
             btnFast.backgroundTintList = colorUnselected
         }

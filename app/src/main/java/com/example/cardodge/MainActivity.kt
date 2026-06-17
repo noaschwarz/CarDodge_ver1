@@ -58,6 +58,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gameRunnable: Runnable
     private var isResetting = false // check for reset
     private var accelerometer: Sensor? = null
+    private var magnetometer: Sensor? = null
+    private var lastTiltTime: Long = 0L // cooldown timer flag for tilt processing
     private var lastLatitude: Double = 35.3606  // defaul
     private var lastLongitude: Double = 138.7274 // default
     private lateinit var soundPool: SoundPool
@@ -240,8 +242,21 @@ class MainActivity : AppCompatActivity() {
                 if (location != null) {
                     lastLatitude = location.latitude
                     lastLongitude = location.longitude
+                    showHighScoreInputDialog()
+                } else {
+                    fusedLocationClient.getCurrentLocation(
+                        com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+                        null
+                    ).addOnSuccessListener { freshLocation ->
+                        if (freshLocation != null) {
+                            lastLatitude = freshLocation.latitude
+                            lastLongitude = freshLocation.longitude
+                        }
+                        showHighScoreInputDialog()
+                    }.addOnFailureListener {
+                        showHighScoreInputDialog()
+                    }
                 }
-                showHighScoreInputDialog()
             }.addOnFailureListener {
                 showHighScoreInputDialog()
             }
@@ -298,8 +313,13 @@ class MainActivity : AppCompatActivity() {
     private fun executeRestartSequence() {
         Toast.makeText(this, "restating, so don't cry over spilled lemonade", Toast.LENGTH_LONG).show()
         gameManager.reset()
-        main_btn_Left.visibility = View.VISIBLE
-        main_btn_Right.visibility = View.VISIBLE
+        if (useSensorMode) {
+            main_btn_Left.visibility = View.GONE
+            main_btn_Right.visibility = View.GONE
+        } else {
+            main_btn_Left.visibility = View.VISIBLE
+            main_btn_Right.visibility = View.VISIBLE
+        }
         for (heart in main_img_hearts) {
             heart.visibility = View.VISIBLE
         }
@@ -327,20 +347,29 @@ class MainActivity : AppCompatActivity() {
     private fun initSensor() {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_GAME)
+        sensorManager.registerListener(sensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_GAME)
     }
 
-    private val sensorEventListener = object : SensorEventListener { //listener for movement
+    private val sensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
-            if (event == null) return
-            val x = event.values[0] // Lateral tilt
-
-            if (x < -2.0) { // Tilt Right
-                gameManager.moveCarRight()
-                refreshRenderUI()
-            } else if (x > 2.0) { // Tilt Left
-                gameManager.moveCarLeft()
-                refreshRenderUI()
+            if (event == null || isResetting) return
+            if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
+                val magX = event.values[0]
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastTiltTime > 250L) {
+                    if (magX > 10.0f) {
+                        gameManager.moveCarRight()
+                        refreshRenderUI()
+                        lastTiltTime = currentTime
+                    }
+                    else if (magX < -10.0f) {
+                        gameManager.moveCarLeft()
+                        refreshRenderUI()
+                        lastTiltTime = currentTime
+                    }
+                }
             }
         }
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -356,8 +385,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (useSensorMode && accelerometer != null) {
-            sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_GAME)
+        if (useSensorMode) {
+            accelerometer?.let { sensorManager.registerListener(sensorEventListener, it, SensorManager.SENSOR_DELAY_GAME) }
+            magnetometer?.let { sensorManager.registerListener(sensorEventListener, it, SensorManager.SENSOR_DELAY_GAME) }
         }
         if (!isResetting && ::gameRunnable.isInitialized) {
             gameHandler.removeCallbacks(gameRunnable)

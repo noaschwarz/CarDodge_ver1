@@ -12,7 +12,6 @@ class GameManager(private val lifeCount: Int = 3) {
     val obstacleMatrix = Array(rows) { IntArray(cols) }
 
     var currentCarLane: Int = 2 // start game on middle lane (0=very Left, 1=Left, 2=Middle, 3=Right, 4=very Right)
-    var score: Int = 0          // distance
     var numberOfHits: Int = 0
     var distanceOdometer: Int = 0
     var coinScore: Int = 0
