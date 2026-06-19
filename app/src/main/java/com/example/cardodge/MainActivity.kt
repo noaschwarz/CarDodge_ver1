@@ -355,17 +355,19 @@ class MainActivity : AppCompatActivity() {
     private val sensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
             if (event == null || isResetting) return
-            if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
-                val magX = event.values[0]
+
+            if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                val accX = event.values[0]
                 val currentTime = System.currentTimeMillis()
+                val DEADBONE_THRESHOLD = 2.0f
                 if (currentTime - lastTiltTime > 250L) {
-                    if (magX > 10.0f) {
-                        gameManager.moveCarRight()
+                    if (accX > DEADBONE_THRESHOLD) {
+                        gameManager.moveCarLeft()
                         refreshRenderUI()
                         lastTiltTime = currentTime
                     }
-                    else if (magX < -10.0f) {
-                        gameManager.moveCarLeft()
+                    else if (accX < -DEADBONE_THRESHOLD) {
+                        gameManager.moveCarRight()
                         refreshRenderUI()
                         lastTiltTime = currentTime
                     }
